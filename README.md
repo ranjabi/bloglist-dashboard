@@ -8,9 +8,9 @@ Visit at https://bloglist-chakraui.herokuapp.com/.
 ## Screenshots
 | Manage Blog List Section       |   New Blog Section       |
 | :-------------: |:-------------:|
-| ![Main Section](https://github.com/ranjabi/fullstackopen2022/blob/main/part5/bloglist-frontend/src/assets/main-page.png) | ![New Blog Section](https://github.com/ranjabi/fullstackopen2022/blob/main/part5/bloglist-frontend/src/assets/new-blog-section.png)
+| ![Main Section](https://github.com/ranjabi/bloglist-dashboard/tree/main/frontend/src/assets/main-page.png) | ![New Blog Section](https://github.com/ranjabi/bloglist-dashboard/tree/main/frontend/src/assets/new-blog-section.png)
 | Login Page        |
-| ![Login Page](https://github.com/ranjabi/fullstackopen2022/blob/main/part5/bloglist-frontend/src/assets/login-page.png) |
+| ![Login Page](https://github.com/ranjabi/bloglist-dashboard/tree/main/frontend/src/assets/login-page.png) |
 
 
 
