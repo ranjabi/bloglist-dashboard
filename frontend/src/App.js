@@ -1,72 +1,54 @@
 import { useState, useEffect } from 'react'
-import BlogItem from './components/BlogItem'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import registerService from './services/register'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-// import './App.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import LoginForm from './components/LoginForm'
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  extendTheme,
-  Box,
-} from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import Navbar from './components/Navbar'
 import Blogs from './components/Blogs'
 import ToggleButton from './components/ToggleButton'
-
-// const theme = extendTheme({
-//   components: {
-//     Container: {
-//       defaultProps: {
-//         maxWidth: '62em',
-//       },
-//     },
-//   },
-// })
+import { useDispatch, useSelector } from 'react-redux'
+import { addLikes, getBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const dispatch = useDispatch()
+  const rawBlogs = useSelector((state) => state.blogs)
+  const sortedBlogs = [...rawBlogs].sort((a, b) => b.likes - a.likes)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
-  const [filter, setFilter] = useState('AllBlog')
+  const [filter, setFilter] = useState('AllBlogs')
   const [messageType, setMessageType] = useState(null)
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs))
-      .then(console.log('blogservce use effect', blogs))
-  }, [])
+    dispatch(getBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggenUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggenUserJSON) {
       const user = JSON.parse(loggenUserJSON)
       setUser(user)
-      console.log('user useeffect', user)
+      // console.log('user useeffect', user)
       blogService.setToken(user.token)
     }
   }, [])
 
   const myBlogHandler = () => {
-    setFilter('MyBlog')
-    console.log(blogs, 'my blogs')
-    console.log(filter, username, 'set to true')
+    setFilter('MyBlogs')
+    // console.log(blogs, 'my blogs')
+    // console.log(filter, username, 'set to true')
   }
 
   const allBlogHandler = () => {
-    setFilter('AllBlog')
-    console.log(blogs, 'all blogs')
-    console.log(filter, 'set to false')
+    setFilter('AllBlogs')
+    // console.log(blogs, 'all blogs')
+    // console.log(filter, 'set to false')
   }
 
   const handleLogin = async (event) => {
@@ -82,7 +64,7 @@ const App = () => {
       blogService.setToken(user.token)
 
       setUser(user)
-      console.log(username, 'logged in')
+      // console.log(username, 'logged in')
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -100,9 +82,9 @@ const App = () => {
     event.preventDefault()
 
     try {
-      const user = await registerService.register({
+      await registerService.register({
         username,
-        username,
+        name: username,
         password,
       })
 
@@ -132,27 +114,17 @@ const App = () => {
   }
 
   const addBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs([...blogs, returnedBlog])
-      console.log('add blog', returnedBlog)
-      console.log(user.id)
-      console.log(returnedBlog.user)
-      console.log(returnedBlog.user.username)
-    })
+    dispatch(createBlog(blogObject))
   }
 
   const handleLikeOf = async (id) => {
-    const findBlog = blogs.find((e) => e.id === id)
-    const changedBlog = { ...findBlog, likes: findBlog.likes + 1 }
-
-    const returnedBlog = await blogService.update(id, changedBlog)
-    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)))
     // setLikes(likes + 1)
+    dispatch(addLikes(id))
   }
 
   const FILTER_MAP = {
-    AllBlog: () => true,
-    MyBlog: (blog) =>
+    AllBlogs: () => true,
+    MyBlogs: (blog) =>
       blog.user.username === user.username || blog.user === user.id,
   }
 
@@ -177,6 +149,7 @@ const App = () => {
             <ToggleButton
               myBlogHandler={myBlogHandler}
               allBlogHandler={allBlogHandler}
+              filter={filter}
             >
               <Togglable buttonLabel="Add Blog">
                 <BlogForm setMessage={setMessage} createBlog={addBlog} />
@@ -186,8 +159,7 @@ const App = () => {
             <Blogs
               username={user.username}
               id={user.id}
-              blogs={blogs.filter(FILTER_MAP[filter])}
-              setBlogs={setBlogs}
+              blogs={sortedBlogs.filter(FILTER_MAP[filter])}
               handleLikeOf={handleLikeOf}
             />
           </Box>

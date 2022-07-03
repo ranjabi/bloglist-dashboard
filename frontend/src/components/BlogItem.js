@@ -1,9 +1,6 @@
-import { useState } from 'react'
-import blogService from '../services/blogs'
-import { CheckIcon, DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon } from '@chakra-ui/icons'
 import { FaThumbsUp } from 'react-icons/fa'
 import {
-  Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
@@ -12,7 +9,6 @@ import {
   Button,
   IconButton,
   Icon,
-  VStack,
   Text,
   Flex,
   Heading,
@@ -20,38 +16,18 @@ import {
 } from '@chakra-ui/react'
 
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { removeBlogs } from '../reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
-const BlogItem = ({ blog, setBlogs, blogs, handleLike, username, id }) => {
-  const [detail, setDetail] = useState(false)
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const handleDetail = () => {
-    setDetail(!detail)
-  }
+const BlogItem = ({ blog, handleLike, username, id }) => {
+  const dispatch = useDispatch()
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id)
-      setBlogs(blogs.filter((e) => e.id !== blog.id))
+      dispatch(removeBlogs(blog.id))
     }
   }
 
-  const detailClass = { display: detail ? '' : 'none' }
-
-  // <div style={blogStyle} className="blog">
-  //
-  //     <br />
-  //     likes {blog.likes} <button onClick={handleLike}>like</button>
-  //     <br /> <button onClick={() => handleRemove(blog)}>remove</button>
-  //   </div>
-  // </div>
   return (
     <>
       <AccordionItem>
