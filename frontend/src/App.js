@@ -157,7 +157,7 @@ const App = () => {
           path="/blogs/:id"
           element={
             <Box>
-              <Navbar username={user.username || ''} handleLogout={handleLogout} />
+              <Navbar username={user ? user.username : ''} handleLogout={handleLogout} />
               <Blog
                 blogs={sortedBlogs.filter(FILTER_MAP[filter])}
               />
