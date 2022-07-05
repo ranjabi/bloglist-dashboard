@@ -1,16 +1,17 @@
 import React from 'react'
-import { Container, Box } from '@chakra-ui/react'
+import { Container, Center } from '@chakra-ui/react'
 import BlogItem from './BlogItem'
 import { Accordion, Heading } from '@chakra-ui/react'
 
 const Blogs = ({ blogs, handleLikeOf, username, id }) => {
   return (
-    <Box px="4">
+    <Center>
       <Container
         maxW="container.lg"
         p="8"
+        mx="12"
         border="1px"
-        borderColor="gray.100"
+        borderColor="gray.200"
         borderRadius="lg"
       >
         <Accordion defaultIndex={[0]} allowMultiple>
@@ -34,7 +35,7 @@ const Blogs = ({ blogs, handleLikeOf, username, id }) => {
           )}
         </Accordion>
       </Container>
-    </Box>
+    </Center>
   )
 }
 

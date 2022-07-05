@@ -1,5 +1,5 @@
 import { DeleteIcon } from '@chakra-ui/icons'
-import { FaThumbsUp } from 'react-icons/fa'
+import { FaThumbsUp, FaComment } from 'react-icons/fa'
 import {
   AccordionItem,
   AccordionButton,
@@ -14,6 +14,7 @@ import {
   Heading,
   Link,
 } from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom'
 
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { removeBlogs } from '../reducers/blogReducer'
@@ -21,6 +22,7 @@ import { useDispatch } from 'react-redux'
 
 const BlogItem = ({ blog, handleLike, username, id }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
@@ -45,7 +47,7 @@ const BlogItem = ({ blog, handleLike, username, id }) => {
             <Link href="https://chakra-ui.com" isExternal>
               {blog.url} <ExternalLinkIcon mx="2px" />
             </Link>
-            <Flex alignItems="flex-end" gap="2">
+            <Flex mt="1" alignItems="flex-end" gap="2">
               {blog.user.username === username || blog.user === id ? (
                 <IconButton
                   onClick={() => handleRemove(blog)}
@@ -55,8 +57,18 @@ const BlogItem = ({ blog, handleLike, username, id }) => {
                   icon={<DeleteIcon />}
                 />
               ) : null}
+              <IconButton
+                onClick={() => navigate(`/blogs/${blog.id}`)}
+                colorScheme="teal"
+                aria-label="Remoev Post"
+                size="sm"
+                icon={<Icon as={FaComment} />}
+              />
+
               <Button
-                onClick={handleLike}
+                onClick={() => {
+                  handleLike(blog.id)
+                }}
                 mt="1"
                 size="sm"
                 rightIcon={<Icon as={FaThumbsUp} />}

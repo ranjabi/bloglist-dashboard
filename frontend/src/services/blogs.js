@@ -21,21 +21,21 @@ const create = async (newObject) => {
   return response.data
 }
 
+const addComment = async (newObject) => {
+  // content and blog
+  console.log('4', newObject)
+  const response = await axios.post(`${baseUrl}/${newObject.blog}/comments`, newObject)
+  console.log(response.data)
+  return response.data
+}
+
 const remove = async (id) => {
   await axios.delete(`${baseUrl}/${id}`)
 }
 
-const update = async (id) => {
-  const datas = await axios.get(`${baseUrl}/${id}`)
-  const changedBlog = datas.data
-  const request = await axios.put(`${baseUrl}/${id}`, {
-    title: changedBlog.title,
-    author: changedBlog.author,
-    url: changedBlog.url,
-    likes: changedBlog.likes + 1,
-    user: changedBlog.user,
-  })
+const update = async (id, newObject) => {
+  const request = await axios.put(`${baseUrl}/${id}`, newObject)
   return request.data
 }
 
-export default { getAll, create, update, remove, setToken }
+export default { getAll, create, update, remove, setToken, addComment }

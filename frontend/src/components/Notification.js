@@ -1,9 +1,7 @@
 import React from 'react'
 import {
   Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
+  AlertIcon
 } from '@chakra-ui/react'
 
 const Notification = ({ type, message }) => {

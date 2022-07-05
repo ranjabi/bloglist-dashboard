@@ -1,26 +1,42 @@
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  Routes,
+  Route,
+  // Link,
+  Navigate,
+  useNavigate,
+} from 'react-router-dom'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import registerService from './services/register'
+
+import { addLikes, getBlogs, createBlog } from './reducers/blogReducer'
+
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { ChakraProvider } from '@chakra-ui/react'
 import LoginForm from './components/LoginForm'
-import { Box } from '@chakra-ui/react'
 import Navbar from './components/Navbar'
 import Blogs from './components/Blogs'
 import ToggleButton from './components/ToggleButton'
-import { useDispatch, useSelector } from 'react-redux'
-import { addLikes, getBlogs, createBlog } from './reducers/blogReducer'
+import Users from './components/Users'
+
+import { ChakraProvider } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
+import Blog from './components/Blog'
 
 const App = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const rawBlogs = useSelector((state) => state.blogs)
   const sortedBlogs = [...rawBlogs].sort((a, b) => b.likes - a.likes)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(
+    JSON.parse(window.localStorage.getItem('loggedBlogappUser')) || null
+  )
   const [message, setMessage] = useState(null)
   const [filter, setFilter] = useState('AllBlogs')
   const [messageType, setMessageType] = useState(null)
@@ -30,6 +46,7 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
+    // console.log('user', user)
     const loggenUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggenUserJSON) {
       const user = JSON.parse(loggenUserJSON)
@@ -67,6 +84,7 @@ const App = () => {
       // console.log(username, 'logged in')
       setUsername('')
       setPassword('')
+      navigate('/')
     } catch (exception) {
       setUsername('')
       setPassword('')
@@ -119,7 +137,11 @@ const App = () => {
 
   const handleLikeOf = async (id) => {
     // setLikes(likes + 1)
-    dispatch(addLikes(id))
+    const toLike = rawBlogs.find(b => b.id === id)
+    const liked = {
+      ...toLike, likes: (toLike.likes||0) + 1,
+    }
+    dispatch(addLikes(id, liked))
   }
 
   const FILTER_MAP = {
@@ -130,41 +152,76 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <div>
-        {user === null ? (
-          <LoginForm
-            handleLogin={handleLogin}
-            registerHandler={registerHandler}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            message={message}
-            messageType={messageType}
-          />
-        ) : (
-          <Box>
-            <Navbar username={user.username} handleLogout={handleLogout} />
-            <Notification type="success" message={message} />
-            <ToggleButton
-              myBlogHandler={myBlogHandler}
-              allBlogHandler={allBlogHandler}
-              filter={filter}
-            >
-              <Togglable buttonLabel="Add Blog">
-                <BlogForm setMessage={setMessage} createBlog={addBlog} />
-              </Togglable>
-            </ToggleButton>
-
-            <Blogs
-              username={user.username}
-              id={user.id}
-              blogs={sortedBlogs.filter(FILTER_MAP[filter])}
-              handleLikeOf={handleLikeOf}
+      <Routes>
+        <Route
+          path="/blogs/:id"
+          element={
+            <Box>
+              <Navbar username={user.username} handleLogout={handleLogout} />
+              <Blog
+                blogs={sortedBlogs.filter(FILTER_MAP[filter])}
+              />
+            </Box>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            user ? (
+              <Box>
+                <Navbar username={user.username} handleLogout={handleLogout} />
+                <Users setUser={setUser} />
+              </Box>
+            ) : (
+              <Navigate replace to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <LoginForm
+              handleLogin={handleLogin}
+              registerHandler={registerHandler}
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              message={message}
+              messageType={messageType}
             />
-          </Box>
-        )}
-      </div>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            user === null ? (
+              <Navigate replace to="/login" />
+            ) : (
+              <Box>
+                <Navbar username={user.username} handleLogout={handleLogout} />
+                <Notification type="success" message={message} />
+                <ToggleButton
+                  myBlogHandler={myBlogHandler}
+                  allBlogHandler={allBlogHandler}
+                  filter={filter}
+                >
+                  <Togglable buttonLabel="Add Blog">
+                    <BlogForm setMessage={setMessage} createBlog={addBlog} />
+                  </Togglable>
+                </ToggleButton>
+
+                <Blogs
+                  username={user.username}
+                  id={user.id}
+                  blogs={sortedBlogs.filter(FILTER_MAP[filter])}
+                  handleLikeOf={handleLikeOf}
+                />
+              </Box>
+            )
+          }
+        />
+      </Routes>
     </ChakraProvider>
   )
 }
