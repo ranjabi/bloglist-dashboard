@@ -33,6 +33,8 @@ Visit at https://bloglist-chakraui.herokuapp.com/.
 - Add a comment to a blog list
 - See list of users and its amount of posted blog list
 
+You can fill the username and password with **admin** to log in for demo purposes or register a new account.
+
 ## Lessons Learned
 
 React state is immutable and behaves asynchronously, the right method is needed to make sure the components can still render the newest state update.
