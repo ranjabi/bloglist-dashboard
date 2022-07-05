@@ -29,7 +29,13 @@ const Blog = () => {
   const sortedBlogs = [...rawBlogs].sort((a, b) => b.likes - a.likes)
 
   const handleLike = () => {
-    dispatch(addLikes(id))
+    const toLike = rawBlogs.find((b) => b.id === id)
+    const liked = {
+      ...toLike,
+      likes: (toLike.likes || 0) + 1,
+    }
+    console.log('liked', liked)
+    dispatch(addLikes(id, liked))
   }
 
   useEffect(() => {

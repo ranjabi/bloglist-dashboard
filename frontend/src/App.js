@@ -129,6 +129,7 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
+    navigate('/')
   }
 
   const addBlog = (blogObject) => {
@@ -137,9 +138,10 @@ const App = () => {
 
   const handleLikeOf = async (id) => {
     // setLikes(likes + 1)
-    const toLike = rawBlogs.find(b => b.id === id)
+    const toLike = rawBlogs.find((b) => b.id === id)
     const liked = {
-      ...toLike, likes: (toLike.likes||0) + 1,
+      ...toLike,
+      likes: (toLike.likes || 0) + 1,
     }
     dispatch(addLikes(id, liked))
   }
@@ -156,12 +158,14 @@ const App = () => {
         <Route
           path="/blogs/:id"
           element={
-            <Box>
-              <Navbar username={user ? user.username : ''} handleLogout={handleLogout} />
-              <Blog
-                blogs={sortedBlogs.filter(FILTER_MAP[filter])}
-              />
-            </Box>
+            user ? (
+              <Box>
+                <Navbar username={user.username} handleLogout={handleLogout} />
+                <Blog blogs={sortedBlogs.filter(FILTER_MAP[filter])} />
+              </Box>
+            ) : (
+              <Navigate replace to="/login" />
+            )
           }
         />
         <Route
