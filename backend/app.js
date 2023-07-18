@@ -13,6 +13,7 @@ const middleware = require('./utils/middleware')
 // const morgan = require('morgan')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
+const healthRouter = require('./controllers/health')
 
 logger.info('connecting to', config.MONGODB_URI)
 
@@ -33,6 +34,7 @@ app.use('/api/blogs', blogsRouter)
 app.use('/api/comments', commentsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/health', healthRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
