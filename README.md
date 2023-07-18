@@ -4,7 +4,6 @@ Save and manage your list of favorite blogs. See other's blog list and give a li
 
 Visit at https://bloglist-chakraui.herokuapp.com/.
 
-
 ## Screenshots
 | Manage Blog List |   New Blog |
 | :-------------: |:-------------:|
@@ -13,8 +12,6 @@ Visit at https://bloglist-chakraui.herokuapp.com/.
 | ![Blog Detail](https://raw.githubusercontent.com/ranjabi/bloglist-dashboard/main/frontend/src/assets/single-blog-page.png) | ![Login Page](https://raw.githubusercontent.com/ranjabi/bloglist-dashboard/main/frontend/src/assets/login-page.png) |
 | **List of Users** |
 | ![List of Users](https://raw.githubusercontent.com/ranjabi/bloglist-dashboard/main/frontend/src/assets/users-page.png) |
-
-
 
 ## Tech Stack
 
