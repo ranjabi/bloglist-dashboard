@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:match*",
+            "destination": "https://bloglist-be.fly.dev/api/:match*"
+        }
+    ]
+}
