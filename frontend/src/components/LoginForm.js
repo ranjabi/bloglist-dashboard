@@ -10,6 +10,10 @@ import {
   Box,
   Button,
   Flex,
+  useDisclosure,
+  Alert,
+  AlertDescription,
+  CloseButton,
 } from '@chakra-ui/react'
 import Notification from './Notification'
 
@@ -23,40 +27,64 @@ const LoginForm = ({
   message,
   messageType,
 }) => {
+  const {
+    isOpen: isVisible,
+    onClose,
+  } = useDisclosure({ defaultIsOpen: true })
+
   return (
     <Box bg="gray.100">
       <Container maxW="container.lg">
         <Center h="100vh">
-          <VStack bg="white" p="10" spacing="3">
-            <Heading mb="3">Bloglist</Heading>
-            <Notification type={messageType} message={message} />
-            <form onSubmit={handleLogin}>
-              <FormControl>
-                <FormLabel>Username</FormLabel>
-                <Input
-                  value={username}
-                  placeholder="Username"
-                  onChange={({ target }) => setUsername(target.value)}
+          <VStack>
+            {isVisible && (
+              <Alert status="info" w={80} position={'relative'}>
+                <Box>
+                  <AlertDescription>
+                    For demo purposes, you can use
+                    <br/>the following credentials:
+                    <br/>Username: <strong>demo</strong> <br/>Password: <strong>demo</strong>
+                  </AlertDescription>
+                </Box>
+                <CloseButton
+                  position="absolute"
+                  right={1}
+                  top={1}
+                  onClick={onClose}
                 />
-              </FormControl>
-              <FormControl mt="3">
-                <FormLabel>Password</FormLabel>
-                <Input
-                  type="password"
-                  value={password}
-                  placeholder="Password"
-                  onChange={({ target }) => setPassword(target.value)}
-                />
-              </FormControl>
-              <Flex w="full" pt="6" justifyContent="space-around">
-                <Button colorScheme="teal" type="submit" size="md">
-                  Login
-                </Button>
-                <Button onClick={registerHandler} size="md">
-                  Register
-                </Button>
-              </Flex>
-            </form>
+              </Alert>
+            )}
+            <VStack bg="white" p="10" spacing="3" w={80}>
+              <Heading mb="3">Bloglist</Heading>
+              <Notification type={messageType} message={message} />
+              <form onSubmit={handleLogin}>
+                <FormControl>
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    value={username}
+                    placeholder="Username"
+                    onChange={({ target }) => setUsername(target.value)}
+                  />
+                </FormControl>
+                <FormControl mt="3">
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type="password"
+                    value={password}
+                    placeholder="Password"
+                    onChange={({ target }) => setPassword(target.value)}
+                  />
+                </FormControl>
+                <Flex w="full" pt="6" justifyContent="space-between">
+                  <Button onClick={registerHandler} size="md">
+                    Register
+                  </Button>
+                  <Button colorScheme="teal" type="submit" size="md">
+                    Login
+                  </Button>
+                </Flex>
+              </form>
+            </VStack>
           </VStack>
         </Center>
       </Container>
