@@ -38,6 +38,19 @@ describe('when there is initially some blogs saved', () => {
 
 describe('addition of a new blog', () => {
   test('a valid blog can be added', async () => {
+    const userCredential = {
+      username: 'root',
+      password: 'sekret'
+    }
+
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash(userCredential.password, 10)
+    const user = new User({ username: userCredential.username, passwordHash })
+    await user.save()
+
+    const loginResponse = await api.post('/api/login').send(userCredential)
+    const token = loginResponse.body.token
+
     const newBlog = {
       title: 'async/await simplifies making async calls',
       author: 'admin',
@@ -47,6 +60,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set({ 'Authorization': `bearer ${token}`})
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
